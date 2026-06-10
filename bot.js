@@ -1,14 +1,12 @@
-// Minimal Telegram bot in plain Node.js (no frameworks, no dependencies).
-// Requires Node.js 18+ (uses the built-in global fetch).
-// Run with: node bot.js   (set BOT_TOKEN first, see README.md)
 
-// const TOKEN = process.env.BOT_TOKEN;
-const TOKEN = "8603670056:AAGZEpE2RpUZV-WpjEWmQBKQBgtAaPNe6W4";
+require("dotenv").config();
 
+// // const TOKEN = process.env.BOT_TOKEN;
+// const TOKEN = "8603670056:AAGZEpE2RpUZV-WpjEWmQBKQBgtAaPNe6W4";
+const TOKEN = process.env.BOT_TOKEN;
+console.log('TOKEN:', TOKEN)
 if (!TOKEN) {
-  console.error("Missing BOT_TOKEN. Set it before running, e.g.:");
-  console.error('  Windows PowerShell:  $env:BOT_TOKEN="123:abc"; node bot.js');
-  console.error('  macOS/Linux:         BOT_TOKEN="123:abc" node bot.js');
+  console.error("Missing BOT_TOKEN");
   process.exit(1);
 }
 
@@ -42,6 +40,14 @@ async function handleUpdate(update) {
 }
 
 async function main() {
+  // Remove any webhook so long-polling works correctly.
+  try {
+    await callApi("deleteWebhook", { drop_pending_updates: false });
+    console.log("Webhook cleared.");
+  } catch (err) {
+    console.warn("Could not clear webhook:", err.message);
+  }
+
   console.log("Bot started. Listening for messages...");
   let offset = 0;
 
@@ -50,6 +56,8 @@ async function main() {
       const updates = await callApi("getUpdates", { offset, timeout: 30 });
       for (const update of updates) {
         offset = update.update_id + 1;
+        const text = update.message?.text;
+        if (text) console.log(`Received message: "${text}"`);
         await handleUpdate(update);
       }
     } catch (err) {
