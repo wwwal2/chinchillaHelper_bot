@@ -1,8 +1,6 @@
 
 require("dotenv").config();
 
-// // const TOKEN = process.env.BOT_TOKEN;
-// const TOKEN = "8603670056:AAGZEpE2RpUZV-WpjEWmQBKQBgtAaPNe6W4";
 const TOKEN = process.env.BOT_TOKEN;
 console.log('TOKEN:', TOKEN)
 if (!TOKEN) {
@@ -42,7 +40,7 @@ async function handleUpdate(update) {
 async function main() {
   // Remove any webhook so long-polling works correctly.
   try {
-    await callApi("deleteWebhook", { drop_pending_updates: false });
+    await callApi("deleteWebhook", { drop_pending_updates: true });
     console.log("Webhook cleared.");
   } catch (err) {
     console.warn("Could not clear webhook:", err.message);
