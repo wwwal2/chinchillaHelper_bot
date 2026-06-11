@@ -1,8 +1,8 @@
-
-require("dotenv").config();
+import "dotenv/config";
+import { ApiActionEnum, APIError, APIParams, Update } from "./types";
 
 const TOKEN = process.env.BOT_TOKEN;
-console.log('TOKEN:', TOKEN)
+
 if (!TOKEN) {
   console.error("Missing BOT_TOKEN");
   process.exit(1);
@@ -10,24 +10,25 @@ if (!TOKEN) {
 
 const API = `https://api.telegram.org/bot${TOKEN}`;
 
-async function callApi(method, params) {
-  const res = await fetch(`${API}/${method}`, {
+async function callApi(apiAction: ApiActionEnum, params: APIParams[ApiActionEnum]) {
+  const res = await fetch(`${API}/${apiAction}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(params),
   });
+  
   const data = await res.json();
   if (!data.ok) {
-    throw new Error(`${method} failed: ${data.description}`);
+    throw new Error(`${apiAction} failed: ${data.description}`);
   }
   return data.result;
 }
 
-function sendMessage(chatId, text) {
-  return callApi("sendMessage", { chat_id: chatId, text });
+function sendMessage(chatId: number, text: string) {
+  return callApi(ApiActionEnum.sendMessage, { chat_id: chatId, text });
 }
 
-async function handleUpdate(update) {
+async function handleUpdate(update: Update) {
   const message = update.message;
   if (!message || typeof message.text !== "string") return;
 
@@ -40,10 +41,10 @@ async function handleUpdate(update) {
 async function main() {
   // Remove any webhook so long-polling works correctly.
   try {
-    await callApi("deleteWebhook", { drop_pending_updates: true });
+    await callApi(ApiActionEnum.deleteWebhook, { drop_pending_updates: true });
     console.log("Webhook cleared.");
   } catch (err) {
-    console.warn("Could not clear webhook:", err.message);
+    console.warn("Could not clear webhook:", (err as APIError).message);
   }
 
   console.log("Bot started. Listening for messages...");
@@ -51,7 +52,7 @@ async function main() {
 
   while (true) {
     try {
-      const updates = await callApi("getUpdates", { offset, timeout: 30 });
+      const updates = await callApi(ApiActionEnum.getUpdates, { offset, timeout: 30 });
       for (const update of updates) {
         offset = update.update_id + 1;
         const text = update.message?.text;
@@ -59,7 +60,7 @@ async function main() {
         await handleUpdate(update);
       }
     } catch (err) {
-      console.error("Error:", err.message);
+      console.error("Error:", (err as APIError).message);
       // Brief pause before retrying so we don't hammer the API on failure.
       await new Promise((r) => setTimeout(r, 2000));
     }
