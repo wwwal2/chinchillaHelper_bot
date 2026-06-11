@@ -6,7 +6,7 @@ export enum ApiActionEnum {
 
 export interface APIParams {
   [ApiActionEnum.sendMessage]: { chat_id: number; text: string };
-  [ApiActionEnum.getUpdates]: { offset?: number; timeout?: number };
+  [ApiActionEnum.getUpdates]: { offset?: number; timeout?: number; allowed_updates?: string[] };
   [ApiActionEnum.deleteWebhook]: { drop_pending_updates?: boolean };
 }
 
