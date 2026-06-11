@@ -16,8 +16,26 @@ export interface Update {
 }
 
 export interface Message {
-  chat: { id: number };
+  message_id: number;
+  from: User;
+  chat: Chat;
   text?: string;
+  date: number;
+}
+
+export interface Chat {
+  id: number;
+  title: string;
+  username: string;
+  type: string;
+}
+
+export interface User {
+  id: number;
+  is_bot: boolean;
+  first_name: string;
+  last_name: string;
+  username: string;
 }
 
 export interface APIError {

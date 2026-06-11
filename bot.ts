@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { ApiActionEnum, APIError, APIParams, Update } from "./types";
+import { ApiActionEnum, APIError } from "./types";
 import { callApi, TOKEN } from "./api";
 import { ignoreOldUpdates } from "./technicalOperations";
 import { catchUserMessage } from "./features";
@@ -16,9 +16,6 @@ async function main() {
 
   console.log("Bot started. Listening for messages...");
 
-
-
-
   let offset = 0;
 
   while (true) {
@@ -27,8 +24,12 @@ async function main() {
 
       for (const update of updates) {
         offset = update.update_id + 1;
+        
         const text = update.message?.text;
-        if (text) console.log(`Received message: "${text}"`);
+
+        if (text) {
+          console.log(`Received message: "${text}"`);
+        };
 
         await catchUserMessage(update, "hi");
       }
