@@ -23,7 +23,7 @@ async function main() {
 
   while (true) {
     try {
-      const updates = await callApi(ApiActionEnum.getUpdates, { offset, timeout: 30, allowed_updates: ["message"] });
+      const updates = await callApi(ApiActionEnum.getUpdates, { offset, timeout: 300, allowed_updates: ["message"] });
 
       for (const update of updates) {
         offset = update.update_id + 1;
@@ -33,7 +33,7 @@ async function main() {
         await catchUserMessage(update, "hi");
       }
     } catch (err) {
-      console.error("Error:", (err as APIError).message);
+      console.error("Error in bot file:", (err as APIError).message);
       // Brief pause before retrying so we don't hammer the API on failure.
       await new Promise((r) => setTimeout(r, 2000));
     }
