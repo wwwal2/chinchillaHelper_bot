@@ -10,6 +10,7 @@ if (!TOKEN) {
   process.exit(1);
 }
 
+
 async function main() {
   await ignoreOldUpdates();
 
