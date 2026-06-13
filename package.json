@@ -5,7 +5,9 @@
   "type": "commonjs",
   "main": "bot.js",
   "scripts": {
-    "start": "tsx bot.ts"
+    "dev": "tsx bot.ts",
+    "build": "tsc --project tsconfig.json",
+    "start": "node dist/bot.js"
   },
   "engines": {
     "node": ">=18"
