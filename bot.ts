@@ -4,6 +4,7 @@ import { ignoreOldUpdates } from "./technicalOperations";
 import { catchUserMessage } from "./features";
 
 
+
 if (!TOKEN) {
   console.error("Missing BOT_TOKEN");
   process.exit(1);
