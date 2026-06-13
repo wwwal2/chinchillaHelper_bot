@@ -5,19 +5,17 @@
   "type": "commonjs",
   "main": "bot.js",
   "scripts": {
-    "start": "tsx bot.ts",
-    "build": "tsx bot.ts",
-    "start:prod": "tsx bot.ts"
+    "start": "tsx bot.ts"
   },
   "engines": {
     "node": ">=18"
   },
   "dependencies": {
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "tsx": "^4.22.4"
   },
   "devDependencies": {
     "@types/node": "^25.9.3",
-    "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
 }
