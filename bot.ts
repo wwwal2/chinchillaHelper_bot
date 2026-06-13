@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { ApiActionEnum, APIError } from "./types";
 import { callApi, TOKEN } from "./api";
 import { ignoreOldUpdates } from "./technicalOperations";
