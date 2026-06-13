@@ -6,7 +6,7 @@
   "main": "bot.js",
   "scripts": {
     "start": "tsx bot.ts",
-    "build": "tsc",
+    "build": "tsx bot.ts",
     "start:prod": "tsx bot.ts"
   },
   "engines": {
