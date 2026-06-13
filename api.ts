@@ -1,4 +1,4 @@
-import "dotenv/config";
+require('dotenv').config(); 
 import { ApiActionEnum, APIParams } from "./types";
 
 export const TOKEN = process.env.BOT_TOKEN;
