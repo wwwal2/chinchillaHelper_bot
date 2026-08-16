@@ -2,16 +2,15 @@ import { ApiActionEnum, APIError } from "./types";
 import { callApi, TOKEN } from "./api";
 import { ignoreOldUpdates } from "./technicalOperations";
 import { catchUserMessage } from "./features";
-
-
+import { startHealthServer } from "./health";
 
 if (!TOKEN) {
   console.error("Missing BOT_TOKEN");
   process.exit(1);
 }
 
-
 async function main() {
+  startHealthServer();
   await ignoreOldUpdates();
 
   console.log("Bot started. Listening for messages...");
