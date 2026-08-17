@@ -1,0 +1,27 @@
+name: Deploy to Elastic Beanstalk
+
+on:
+  push:
+    branches:
+      - master_docker_server_build
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '.git/*' -x '.github/*'
+
+      - name: Deploy to Elastic Beanstalk
+        uses: einaregilsson/beanstalk-deploy@v23
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: chinchillabot
+          environment_name: chinchillabot
+          region: us-east-1
+          version_label: "gh-${{ github.run_number }}-${{ github.sha }}"
+          deployment_package: deploy.zip
