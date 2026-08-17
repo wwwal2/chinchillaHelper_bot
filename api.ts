@@ -17,4 +17,5 @@ export async function callApi(apiAction: ApiActionEnum, params: APIParams[ApiAct
       throw new Error(`${apiAction} failed: ${data.description}`);
     }
     return data.result;
+    
   }
