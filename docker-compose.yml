@@ -1,0 +1,19 @@
+services:
+  be:
+    build:
+      context: ./BE
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  fe:
+    build:
+      context: ./FE
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - be
+    restart: unless-stopped

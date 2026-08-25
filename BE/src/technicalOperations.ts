@@ -13,4 +13,3 @@ export async function ignoreOldUpdates() {
 export async function sendMessage(chatId: number, text: string) {
     return await callApi(ApiActionEnum.sendMessage, { chat_id: chatId, text });
   }
-  

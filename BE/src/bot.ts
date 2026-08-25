@@ -1,3 +1,4 @@
+import "./logBroadcast";
 import { ApiActionEnum, APIError } from "./types";
 import { callApi, TOKEN } from "./api";
 import { ignoreOldUpdates } from "./technicalOperations";
@@ -34,7 +35,6 @@ async function main() {
       }
     } catch (err) {
       console.error("Error in bot file:", (err as APIError).message);
-      // Brief pause before retrying so we don't hammer the API on failure.
       await new Promise((r) => setTimeout(r, 2000));
     }
   }
