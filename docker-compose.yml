@@ -13,7 +13,7 @@ services:
       context: ./FE
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
+      - "80:80"
     depends_on:
       - be
     restart: unless-stopped
