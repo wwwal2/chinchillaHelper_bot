@@ -1,6 +1,7 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { addLogClient } from "./logBroadcast";
 import { isPaused, pause, resume } from "./botState";
+import { ignoreOldUpdates } from "./technicalOperations";
 
 const PORT = Number(process.env.PORT) || 8080;
 
@@ -10,7 +11,7 @@ function setCorsHeaders(res: ServerResponse): void {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
-function handleBotControl(req: IncomingMessage, res: ServerResponse): boolean {
+async function handleBotControl(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
   if (req.url === "/status" && req.method === "GET") {
     setCorsHeaders(res);
     res.writeHead(200, { "Content-Type": "application/json" });
@@ -30,6 +31,7 @@ function handleBotControl(req: IncomingMessage, res: ServerResponse): boolean {
   if (req.url === "/resume" && req.method === "POST") {
     setCorsHeaders(res);
     resume();
+    await ignoreOldUpdates();
     console.log("Bot resumed via API.");
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ paused: false }));
@@ -48,8 +50,8 @@ function handleBotControl(req: IncomingMessage, res: ServerResponse): boolean {
 
 /** HTTP server for Elastic Beanstalk health checks and the SSE log stream. */
 export function startHealthServer(): void {
-  const server = createServer((req, res) => {
-    if (handleBotControl(req, res)) return;
+  const server = createServer(async (req, res) => {
+    if (await handleBotControl(req, res)) return;
 
     if (req.url === "/logs") {
       res.writeHead(200, {
