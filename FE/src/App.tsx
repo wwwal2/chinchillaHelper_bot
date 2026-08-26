@@ -13,7 +13,6 @@ function formatTime(iso: string): string {
 
 export default function App() {
   const [entries, setEntries] = useState<LogEntry[]>([]);
-  const [connected, setConnected] = useState(false);
   const [paused, setPaused] = useState(false);
   const [toggling, setToggling] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -28,15 +27,10 @@ export default function App() {
   useEffect(() => {
     const es = new EventSource("/logs");
 
-    es.onopen = () => setConnected(true);
 
     es.onmessage = (e: MessageEvent<string>) => {
       const entry: LogEntry = JSON.parse(e.data);
       setEntries((prev) => [...prev, entry]);
-    };
-
-    es.onerror = () => {
-      setConnected(false);
     };
 
     return () => es.close();
@@ -64,9 +58,6 @@ export default function App() {
     <div className="app">
       <header className="header">
         <h1>Chinchilla Bot</h1>
-        <span className={`status ${connected ? "status--online" : "status--offline"}`}>
-          {connected ? "Connected" : "Disconnected"}
-        </span>
         <span className={`status ${paused ? "status--offline" : "status--online"}`}>
           {paused ? "Bot paused" : "Bot running"}
         </span>
