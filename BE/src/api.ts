@@ -5,11 +5,12 @@ export const TOKEN = process.env.BOT_TOKEN;
 
 const API = `https://api.telegram.org/bot${TOKEN}`;
 
-export async function callApi(apiAction: ApiActionEnum, params: APIParams[ApiActionEnum]) {
+export async function callApi(apiAction: ApiActionEnum, params: APIParams[ApiActionEnum], signal?: AbortSignal) {
     const res = await fetch(`${API}/${apiAction}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(params),
+      signal,
     });
     
     const data = await res.json();

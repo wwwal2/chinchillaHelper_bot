@@ -125,3 +125,40 @@ body {
   white-space: pre-wrap;
   word-break: break-word;
 }
+
+.btn-toggle {
+  margin-left: auto;
+  padding: 0.3rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-toggle:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn-toggle--pause {
+  background: color-mix(in srgb, var(--red) 15%, transparent);
+  color: var(--red);
+  border-color: color-mix(in srgb, var(--red) 40%, transparent);
+}
+
+.btn-toggle--pause:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--red) 25%, transparent);
+}
+
+.btn-toggle--resume {
+  background: color-mix(in srgb, var(--green) 15%, transparent);
+  color: var(--green);
+  border-color: color-mix(in srgb, var(--green) 40%, transparent);
+}
+
+.btn-toggle--resume:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--green) 25%, transparent);
+}
