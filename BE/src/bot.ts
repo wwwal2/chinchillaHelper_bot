@@ -1,9 +1,9 @@
-import "./logBroadcast";
-import { ApiActionEnum, APIError } from "./types";
-import { callApi, TOKEN } from "./api";
-import { ignoreOldUpdates } from "./technicalOperations";
-import { catchUserMessage } from "./features";
-import { startHealthServer } from "./health";
+import "./server/logBroadcast";
+import { ApiActionEnum, APIError } from "./telegram/types";
+import { callApi, TOKEN } from "./telegram/api";
+import { ignoreOldUpdates } from "./telegram/helpers";
+import { catchUserMessage } from "./features/greet";
+import { startHealthServer } from "./server/httpServer";
 import { isPaused, setAbortController } from "./botState";
 
 if (!TOKEN) {
@@ -33,12 +33,11 @@ async function main() {
 
       for (const update of updates) {
         offset = update.update_id + 1;
-        
-        const text = update.message?.text;
 
+        const text = update.message?.text;
         if (text) {
           console.log(`Received message: "${text}"`);
-        };
+        }
 
         await catchUserMessage(update, "hi");
       }

@@ -1,32 +1,23 @@
-import { useEffect, useRef, useState } from "react";
-import "./App.css";
-
-interface LogEntry {
-  level: "log" | "error" | "warn";
-  message: string;
-  timestamp: string;
-}
-
-function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString([], { hour12: false });
-}
+import { useEffect, useState } from "react";
+import "./styles/App.css";
+import { getStatus, postBotControlAction } from "./api/statusRequests";
+import { LogEntry } from "./api/types";
+import Header from "./components/Header/Header";
+import LogPanel from "./components/LogPanel/LogPanel";
 
 export default function App() {
   const [entries, setEntries] = useState<LogEntry[]>([]);
   const [paused, setPaused] = useState(false);
   const [toggling, setToggling] = useState(false);
-  const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    fetch("/status")
-      .then((r) => r.json())
-      .then((data: { paused: boolean }) => setPaused(data.paused))
+    getStatus()
+      .then((data) => setPaused(data.paused))
       .catch(() => {});
   }, []);
 
   useEffect(() => {
     const es = new EventSource("/logs");
-
 
     es.onmessage = (e: MessageEvent<string>) => {
       const entry: LogEntry = JSON.parse(e.data);
@@ -36,16 +27,10 @@ export default function App() {
     return () => es.close();
   }, []);
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [entries]);
-
   async function togglePause() {
     setToggling(true);
     try {
-      const endpoint = paused ? "/resume" : "/pause";
-      const res = await fetch(endpoint, { method: "POST" });
-      const data: { paused: boolean } = await res.json();
+      const data = await postBotControlAction(!paused);
       setPaused(data.paused);
     } catch {
       // keep current state if request failed
@@ -56,29 +41,8 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="header">
-        <h1>Chinchilla Bot</h1>
-        <span className={`status ${paused ? "status--offline" : "status--online"}`}>
-          {paused ? "Bot paused" : "Bot running"}
-        </span>
-        <button className={`btn-toggle ${paused ? "btn-toggle--resume" : "btn-toggle--pause"}`} onClick={togglePause} disabled={toggling}>
-          {toggling ? "…" : paused ? "Resume" : "Pause"}
-        </button>
-      </header>
-
-      <main className="log-panel">
-        {entries.length === 0 && (
-          <p className="empty">Waiting for log entries…</p>
-        )}
-        {entries.map((entry, i) => (
-          <div key={i} className={`log-entry log-entry--${entry.level}`}>
-            <span className="log-time">{formatTime(entry.timestamp)}</span>
-            <span className="log-level">{entry.level.toUpperCase()}</span>
-            <span className="log-message">{entry.message}</span>
-          </div>
-        ))}
-        <div ref={bottomRef} />
-      </main>
+      <Header paused={paused} toggling={toggling} onToggle={togglePause} />
+      <LogPanel entries={entries} />
     </div>
   );
 }

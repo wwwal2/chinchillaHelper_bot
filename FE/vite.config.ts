@@ -5,10 +5,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/logs": {
-        target: "http://localhost:8080",
-        changeOrigin: true,
-      },
+      "/logs": { target: "http://localhost:8080", changeOrigin: true },
+      "/status": { target: "http://localhost:8080", changeOrigin: true },
+      "/control": { target: "http://localhost:8080", changeOrigin: true },
     },
   },
 });
