@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./styles/App.css";
 import { getStatus, postBotControlAction } from "./api/statusRequests";
-import { LogEntry } from "./api/types";
+import { LogEntry } from "./types/components";
 import Header from "./components/Header/Header";
 import LogPanel from "./components/LogPanel/LogPanel";
 
