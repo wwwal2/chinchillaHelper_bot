@@ -9,7 +9,7 @@ interface Props {
 export default function Header({ paused, toggling, onToggle }: Props) {
   return (
     <header className="header">
-      <h1>B-Bot polling</h1>
+      <h1>B-Bot webhook</h1>
       <span className={`status ${paused ? "status--offline" : "status--online"}`}>
         {paused ? "Bot paused" : "Bot running"}
       </span>

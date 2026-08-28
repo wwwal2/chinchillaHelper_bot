@@ -1,7 +1,8 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { addLogClient } from "./logBroadcast";
 import { isPaused, pause, resume } from "../botState";
-import { ignoreOldUpdates } from "../telegram/helpers";
+import { catchUserMessage } from "../features/greet";
+import { Update } from "../telegram/types";
 
 const PORT = Number(process.env.PORT) || 8080;
 
@@ -44,7 +45,6 @@ async function handleBotControl(req: IncomingMessage, res: ServerResponse): Prom
       console.log("Bot paused via API.");
     } else {
       resume();
-      await ignoreOldUpdates();
       console.log("Bot resumed via API.");
     }
     res.writeHead(200, { "Content-Type": "application/json" });
@@ -66,6 +66,18 @@ async function handleBotControl(req: IncomingMessage, res: ServerResponse): Prom
 export function startHealthServer(): void {
   const server = createServer(async (req, res) => {
     if (await handleBotControl(req, res)) return;
+
+    if (req.url === "/webhook" && req.method === "POST") {
+      const update = await readJson<Update>(req);
+      res.writeHead(200);
+      res.end();
+      if (update && !isPaused()) {
+        const text = update.message?.text;
+        if (text) console.log(`Received message: "${text}"`);
+        await catchUserMessage(update, "hi");
+      }
+      return;
+    }
 
     if (req.url === "/logs") {
       setCorsHeaders(res);

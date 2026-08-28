@@ -1,12 +1,16 @@
 import { callApi } from "./api";
 import { ApiActionEnum, APIError } from "./types";
 
-export async function ignoreOldUpdates() {
+export async function setupWebhook(webhookUrl: string) {
   try {
-    await callApi(ApiActionEnum.deleteWebhook, { drop_pending_updates: true });
-    console.log("Webhook cleared.");
+    await callApi(ApiActionEnum.setWebhook, {
+      url: webhookUrl,
+      allowed_updates: ["message"],
+      drop_pending_updates: true,
+    });
+    console.log("Webhook registered:", webhookUrl);
   } catch (err) {
-    console.warn("Could not clear webhook:", (err as APIError).message);
+    console.warn("Could not register webhook:", (err as APIError).message);
   }
 }
 

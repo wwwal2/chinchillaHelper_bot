@@ -2,12 +2,14 @@ export enum ApiActionEnum {
   sendMessage = "sendMessage",
   getUpdates = "getUpdates",
   deleteWebhook = "deleteWebhook",
+  setWebhook = "setWebhook",
 }
 
 export interface APIParams {
   [ApiActionEnum.sendMessage]: { chat_id: number; text: string };
   [ApiActionEnum.getUpdates]: { offset?: number; timeout?: number; allowed_updates?: string[] };
   [ApiActionEnum.deleteWebhook]: { drop_pending_updates?: boolean };
+  [ApiActionEnum.setWebhook]: { url: string; allowed_updates?: string[]; drop_pending_updates?: boolean };
 }
 
 export interface Update {
