@@ -1,1 +1,1 @@
-# Chinchilla — Minimal Telegram Bot
+# B-bot — Minimal Telegram Bot

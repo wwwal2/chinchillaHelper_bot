@@ -1,5 +1,5 @@
 {
-  "name": "chinchilla-be",
+  "name": "b-bot-be",
   "version": "1.0.0",
   "description": "Telegram bot backend",
   "type": "commonjs",
