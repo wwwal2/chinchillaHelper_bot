@@ -12,6 +12,8 @@ services:
     build:
       context: ./FE
       dockerfile: Dockerfile
+    environment:
+      - BE_URL=http://be:8080
     ports:
       - "80:80"
     depends_on:
