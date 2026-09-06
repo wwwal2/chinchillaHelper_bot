@@ -1,20 +1,23 @@
-b-bot-webhook.duckdns.org {   
+b-bot-webhook.duckdns.org {
+
     handle /webhook {
         reverse_proxy be:8080
     }
 
-    # SSE log stream (keep connection alive)
     handle /logs {
         reverse_proxy be:8080 {
             flush_interval -1
         }
     }
 
-    # Bot control API
-    handle /status { reverse_proxy be:8080 }
-    handle /control { reverse_proxy be:8080 }
+    handle /status {
+        reverse_proxy be:8080
+    }
 
-    # React admin UI (everything else)
+    handle /control {
+        reverse_proxy be:8080
+    }
+
     handle {
         reverse_proxy fe:80
     }
