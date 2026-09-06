@@ -4,8 +4,6 @@ services:
       context: ./BE
       dockerfile: Dockerfile
     env_file: .env
-    ports:
-      - "8080:8080"
     restart: unless-stopped
 
   fe:
@@ -14,8 +12,24 @@ services:
       dockerfile: Dockerfile
     environment:
       - BE_URL=http://be:8080
-    ports:
-      - "80:80"
     depends_on:
       - be
     restart: unless-stopped
+
+  caddy:
+    image: caddy:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data       # stores the auto-obtained SSL cert
+      - caddy_config:/config
+    depends_on:
+      - be
+      - fe
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
